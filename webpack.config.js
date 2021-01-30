@@ -2,14 +2,12 @@ const WebpackPwaManifest = require('webpack-pwa-manifest');
 const path = require('path');
 
 const config = {
-  entry: {
-    app: './public/index.js',
-  },
-  output: {
-    path: __dirname + '/dist',
-    filename: '[name].bundle.js',
-  },
   mode: 'development',
+  entry: './public/index.js',
+  output: {
+    path: __dirname + '/public/dist',
+    filename: 'index.bundle.js',
+  },
   module: {
     rules: [
       {
@@ -18,7 +16,7 @@ const config = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/present-env'],
+            presets: ['@babel/preset-env'],
           },
         },
       },
@@ -30,15 +28,15 @@ const config = {
       name: 'Budget Tracker App',
       short_name: 'Budget Tracker',
       description: 'An application that helps you track your budget.',
-      background_color: '',
-      theme_color: '',
-      'theme-color': '',
+      background_color: '#dddddd',
+      theme_color: '#dddddd',
+      'theme-color': '#dddddd',
       start_url: '/',
       icons: [
         {
-          src: path.resolve('public/icons/icon-192x192.png'),
+          src: path.resolve('./public/icons/icon-192x192.png'),
           sizes: [96, 128, 192, 256, 384, 512],
-          destination: path.join('assets', 'icons'),
+          destination: path.join('public', 'icons'),
         },
       ],
     }),
