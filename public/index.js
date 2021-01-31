@@ -8,7 +8,6 @@ fetch("/api/transaction")
   .then((data) => {
     // save db data on global variable
     transactions = data;
-
     populateTotal();
     populateTable();
     populateChart();
@@ -79,6 +78,44 @@ function populateChart() {
     },
   });
 }
+
+var version = 1;
+
+var request = window.indexedDB.open("budgetTracker", version);
+request.onupgradeneeded = (event) => {
+  const db = event.target.result;
+  const budgetStore = db.createObjectStore("budget", {
+    keypath: "transactionID",
+    autoIncrement: true,
+  });
+  budgetStore.createIndex("transaction", "by_transaction");
+  budgetStore.createIndex("amount", "by_amount");
+};
+
+request.onsuccess = () => {
+  const db = request.result;
+  const transaction = db.transaction(["budget"], "readwrite");
+  const budgetStore = transaction.objectStore("budget");
+
+  transactions.forEach((transaction) => {
+    budgetStore.add(transaction);
+  });
+
+  transaction.oncomplete = function () {
+    db.close();
+    version++;
+  };
+};
+
+const saveRecord = (index) => {
+  version++;
+  var newTransaction = {
+    transaction: index.name,
+    amount: index.value,
+  };
+  transactions.push(newTransaction);
+  request;
+};
 
 function sendTransaction(isAdding) {
   let nameEl = document.querySelector("#t-name");
